@@ -170,7 +170,7 @@ class OpenAiCall:
                 # so that we don't waste an API call but can still
                 # upgrade models
                 model = self.models[model_index]
-                model_data = self._get_model(model)
+                model_data = get_model(model)
                 # this call is redundant for now since all models have the same
                 # tokenizer, but it's here for future-proofing
                 tokens = _tokens(model, html)
