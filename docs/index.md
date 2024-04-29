@@ -31,11 +31,11 @@ export OPENAI_API_BASE_URL=https://api.aimlapi.com
 **Step 2)** Install the library however you like:
 
 ```bash
-pip install scrapeghost
+pip install git+https://github.com/aimlapi/scrapeghost
 ```
 or
 ```bash
-poetry add scrapeghost
+poetry add git+https://github.com/aimlapi/scrapeghost
 ```
 
 **Step 3)** Instantiate a `SchemaScraper` by defining the shape of the data you wish to extract:
