@@ -1,7 +1,7 @@
 import lxml.html
 import structlog
 import tiktoken
-from .models import _model_dict
+from .models import get_model
 
 logger = structlog.get_logger("scrapeghost")
 
@@ -25,6 +25,6 @@ def cost_estimate(html: str, model: str = "gpt-4") -> float:
     This is a very rough estimate and not guaranteed to be accurate.
     """
     tokens = _tokens(model, html)
-    model_data = _model_dict[model]
+    model_data = get_model[model]
     # assumes response is half as long as prompt, which is probably wrong
     return model_data.cost(tokens, tokens // 2)

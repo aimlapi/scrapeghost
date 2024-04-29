@@ -21,10 +21,11 @@ The library provides a means to scrape structured data from HTML without writing
 
 ## Quickstart
 
-**Step 1)** Obtain an OpenAI API key (<https://platform.openai.com>) and set an environment variable:
+**Step 1)** Obtain an AI/ML API key (<https://aimlapi.com/app/keys>) and set an environment variables:
 
 ```bash
-export OPENAI_API_KEY=sk-...
+export OPENAI_API_KEY=...
+export OPENAI_API_BASE_URL=https://api.aimlapi.com
 ```
 
 **Step 2)** Install the library however you like:

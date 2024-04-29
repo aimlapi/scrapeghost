@@ -24,3 +24,7 @@ models = [
     Model("gpt-3.5-turbo-1106", 0.001, 0.002, 16384, True),
 ]
 _model_dict = {model.name: model for model in models}
+
+
+def get_model(model: str):
+    return _model_dict.get(model, Model(model, 0.01, 0.03, 128000, False))

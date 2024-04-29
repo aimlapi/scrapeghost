@@ -12,7 +12,7 @@ from scrapeghost import utils, models
     ],
 )
 def test_cost_calc(model, pt, ct, total):
-    m = models._model_dict[model]
+    m = models.get_model[model]
     assert m.cost(pt, ct) == total
 
 

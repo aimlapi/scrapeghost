@@ -1,6 +1,7 @@
 """
 Module for making OpenAI API calls.
 """
+
 import os
 import time
 import openai
@@ -19,7 +20,7 @@ from .utils import (
     logger,
     _tokens,
 )
-from .models import _model_dict
+from .models import get_model
 
 Postprocessor = Callable[[Response, "OpenAiCall"], Response]
 
@@ -31,7 +32,10 @@ RETRY_ERRORS = (
 )
 
 
-client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY", ""))
+client = OpenAI(
+    api_key=os.environ.get("OPENAI_API_KEY", ""),
+    base_url=os.environ.get("OPENAI_API_BASE_URL", ""),
+)
 
 
 @dataclass
@@ -95,13 +99,13 @@ class OpenAiCall:
         Augments the response object with the API response, prompt tokens,
         completion tokens, and cost.
         """
+
+        model_data = get_model(model)
         if self.total_cost > self.max_cost:
             raise MaxCostExceeded(
                 f"Total cost {self.total_cost:.2f} exceeds max cost {self.max_cost:.2f}"
             )
-        json_mode = (
-            {"response_format": "json_object"} if _model_dict[model].json_mode else {}
-        )
+        json_mode = {"response_format": "json_object"} if model_data.json_mode else {}
         start_t = time.time()
         completion = client.chat.completions.create(
             model=model,
@@ -115,7 +119,7 @@ class OpenAiCall:
             c_tokens = completion.usage.completion_tokens
         else:
             raise ScrapeghostError("no usage data returned")
-        cost = _model_dict[model].cost(c_tokens, p_tokens)
+        cost = model_data.cost(c_tokens, p_tokens)
         logger.info(
             "API response",
             duration=elapsed,
@@ -166,7 +170,7 @@ class OpenAiCall:
                 # so that we don't waste an API call but can still
                 # upgrade models
                 model = self.models[model_index]
-                model_data = _model_dict[model]
+                model_data = self._get_model(model)
                 # this call is redundant for now since all models have the same
                 # tokenizer, but it's here for future-proofing
                 tokens = _tokens(model, html)
